@@ -1,3 +1,5 @@
+Fork from the official repo https://github.com/robbyrussell/oh-my-zsh.
+
 <p align="center">
   <img src="https://s3.amazonaws.com/ohmyzsh/oh-my-zsh-logo.png" alt="Oh My Zsh">
 </p>
