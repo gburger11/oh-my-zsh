@@ -1,4 +1,5 @@
-source ~/.oh-my-zsh/plugins/zsh-git-prompt/zshrc.sh
+# source ~/.oh-my-zsh/plugins/zsh-git-prompt/zshrc.sh
+source ~/.oh-my-zsh/plugins/git-prompt/git-prompt.plugin.zsh
 
 local ret_status="%(?:%{$fg_bold[green]%}➭ :%{$fg_bold[red]%}➭ )%{$reset_color%}"
 

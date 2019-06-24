@@ -68,6 +68,20 @@ for st in status:
         elif st[0] != ' ':
             staged.append(st)
 
+status_message = Popen(['git','status',],stdout=PIPE).communicate()[0].decode("utf-8")
+status = '0'
+# print(status_message)
+if status_message.find('You are currently rebasing') >= 0:
+    status = 'R'
+elif status_message.find('interactive rebase in progress') >= 0:
+    status = 'iR'
+elif status_message.find('You are currently cherry-picking') >= 0:
+    status = 'C'
+elif status_message.find('You are currently reverting') >= 0:
+    status = 'Rv'
+elif status_message.startswith('On') and len(conflicts) > 0:
+    status = 'S'
+
 out = ' '.join([
     branch,
     str(ahead),
@@ -76,5 +90,6 @@ out = ' '.join([
     str(len(conflicts)),
     str(len(changed)),
     str(len(untracked)),
+    status,
 ])
 print(out, end='')
