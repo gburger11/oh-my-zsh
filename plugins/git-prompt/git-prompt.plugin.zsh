@@ -41,12 +41,16 @@ function update_current_git_vars() {
     GIT_CHANGED=$__CURRENT_GIT_STATUS[6]
     GIT_UNTRACKED=$__CURRENT_GIT_STATUS[7]
     GIT_STATUS=$__CURRENT_GIT_STATUS[8]
+    GIT_LOCAL=$__CURRENT_GIT_STATUS[9]
 }
 
 git_super_status() {
     precmd_update_git_vars
     if [ -n "$__CURRENT_GIT_STATUS" ]; then
       STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
+      if [ "$GIT_LOCAL" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_LOCAL%{${reset_color}%}"
+      fi
       if [ "$GIT_BEHIND" -ne "0" ]; then
           STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
       fi
@@ -86,6 +90,7 @@ ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[blue]%}%{✉ %2G%}"
 #ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{⚡%G%}"
 ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{☠ %2G%}"
 ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[yellow]%}%{✎ %2G%}"
+ZSH_THEME_GIT_PROMPT_LOCAL="%{⌂%G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"

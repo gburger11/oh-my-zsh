@@ -34,6 +34,7 @@ if po.returncode != 0:
 # collect git status information
 untracked, staged, changed, conflicts = [], [], [], []
 ahead, behind = 0, 0
+local_branch = 0
 status = [(line[0], line[1], line[2:]) for line in stdout.decode('utf-8').splitlines()]
 for st in status:
     if st[0] == '#' and st[1] == '#':
@@ -41,8 +42,9 @@ for st in status:
             branch = st[2].split(' ')[-1]
         elif re.search('no branch', st[2]):  # detached status
             branch = get_tagname_or_hash()
-        elif len(st[2].strip().split('...')) == 1:
+        elif len(st[2].strip().split('...')) == 1:  # No remote branch associated
             branch = st[2].strip()
+            local_branch = 1
         else:
             # current and remote branch info
             branch, rest = st[2].strip().split('...')
@@ -91,5 +93,6 @@ out = ' '.join([
     str(len(changed)),
     str(len(untracked)),
     status,
+    str(local_branch),
 ])
 print(out, end='')
