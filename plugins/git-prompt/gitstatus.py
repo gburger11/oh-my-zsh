@@ -1,21 +1,16 @@
-#!/usr/bin/env python
-from __future__ import print_function
-
-import os
-import sys
 import re
-from subprocess import Popen, PIPE, check_output
+from subprocess import check_output
 
 
 def get_tagname_or_hash():
     """return tagname if exists else hash"""
     # get hash
     hash_cmd = ['git', 'rev-parse', '--short', 'HEAD']
-    hash_ = check_output(hash_cmd).strip()
+    hash_ = check_output(hash_cmd).strip().decode("utf-8")
 
     # get tagname
     tags_cmd = ['git', 'for-each-ref', '--points-at=HEAD', '--count=2', '--sort=-version:refname', '--format=%(refname:short)', 'refs/tags']
-    tags = check_output(tags_cmd).split()
+    tags = check_output(tags_cmd).decode("utf-8").split()
 
     if tags:
         return tags[0] + ('+' if len(tags) > 1 else '')
@@ -26,16 +21,13 @@ def get_tagname_or_hash():
 
 # `git status --porcelain --branch` can collect all information
 # branch, remote_branch, untracked, staged, changed, conflicts, ahead, behind
-po = Popen(['git', 'status', '--porcelain', '--branch'], env=dict(os.environ, LANG="C"), stdout=PIPE, stderr=PIPE)
-stdout, sterr = po.communicate()
-if po.returncode != 0:
-    sys.exit(0)  # Not a git repository
+stdout = check_output(['git', 'status', '--porcelain', '--branch']).strip().decode("utf-8")
 
 # collect git status information
 untracked, staged, changed, conflicts = [], [], [], []
 ahead, behind = 0, 0
 local_branch = 0
-status = [(line[0], line[1], line[2:]) for line in stdout.decode('utf-8').splitlines()]
+status = [(line[0], line[1], line[2:]) for line in stdout.splitlines()]
 for st in status:
     if st[0] == '#' and st[1] == '#':
         if re.search('Initial commit on', st[2]) or re.search('No commits yet on', st[2]):
@@ -70,7 +62,7 @@ for st in status:
         elif st[0] != ' ':
             staged.append(st)
 
-status_message = Popen(['git','status',],stdout=PIPE).communicate()[0].decode("utf-8")
+status_message = check_output(['git','status',]).strip().decode("utf-8")
 status = '0'
 # print(status_message)
 if status_message.find('You are currently rebasing') >= 0:
